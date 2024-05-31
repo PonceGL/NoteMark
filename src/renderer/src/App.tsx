@@ -4,7 +4,6 @@ import electronLogo from './assets/electron.svg'
 function App(): JSX.Element {
   const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
 
-
   return (
     <>
       <img alt="logo" className="logo" src={electronLogo} />
