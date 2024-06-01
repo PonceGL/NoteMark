@@ -22,7 +22,7 @@ export const notesAtom = unwrap(notesAtomAsync, (prev) => prev)
 
 export const selectedNoteByIdAtom = atom<string | null>(null)
 
-export const selectedNoteAtom = atom((get): NoteContent | null => {
+const selectedNoteAtomAsync = atom(async (get): Promise<NoteContent | null> => {
   const notes = get(notesAtom)
   const selectedNoteById = get(selectedNoteByIdAtom)
 
@@ -31,11 +31,24 @@ export const selectedNoteAtom = atom((get): NoteContent | null => {
   const selectedNote = notes.find((note) => note.id === selectedNoteById)
   if (!selectedNote) return null
 
+  const content = await window.api.readNote(selectedNote.title)
+
   return {
     ...selectedNote,
-    content: `Hello from Note ${selectedNoteById}`
+    content: content
   }
 })
+
+export const selectedNoteAtom = unwrap(
+  selectedNoteAtomAsync,
+  (prev) =>
+    prev ?? {
+      id: '',
+      title: '',
+      lastEditTime: Date.now(),
+      content: ''
+    }
+)
 
 export const createEmptyNoteAtom = atom(null, (get, set) => {
   const notes = get(notesAtom)

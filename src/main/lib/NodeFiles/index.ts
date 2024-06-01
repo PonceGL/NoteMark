@@ -1,7 +1,7 @@
 import { homedir } from 'os'
 import { APP_DIR_NAME, FILE_ENCODING } from '../../../shared/constants'
 import { NoteInfo } from '../../../shared/types'
-import { ensureDir, readdir, stat } from 'fs-extra'
+import { ensureDir, readFile, readdir, stat } from 'fs-extra'
 import { newUUID } from '../../../shared/utils'
 
 export function getRootDir(): string {
@@ -33,4 +33,9 @@ export async function getNoteInfoFromFileName(fileName: string): Promise<NoteInf
   }
 
   return info
+}
+
+export async function readNote(fileName: string): Promise<string> {
+  const rootDir = getRootDir()
+  return await readFile(`${rootDir}/${fileName}.md`, { encoding: FILE_ENCODING })
 }
