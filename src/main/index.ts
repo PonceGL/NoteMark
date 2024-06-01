@@ -2,8 +2,8 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import { getNotes, readNote } from './lib/NodeFiles'
-import { GetNotes, ReadNote } from '../shared/types'
+import { getNotes, readNote, writeNote } from './lib/NodeFiles'
+import { GetNotes, ReadNote, WriteNote } from '../shared/types'
 
 function createWindow(): void {
   // Create the browser window.
@@ -62,6 +62,7 @@ app.whenReady().then(() => {
   ipcMain.on('ping', () => console.log('pong'))
   ipcMain.handle('getNotes', (_, ...args: Parameters<GetNotes>) => getNotes(...args)) // first argument is event, so we ignore it
   ipcMain.handle('readNote', (_, ...args: Parameters<ReadNote>) => readNote(...args)) // first argument is event, so we ignore it
+  ipcMain.handle('writeNote', (_, ...args: Parameters<WriteNote>) => writeNote(...args)) // first argument is event, so we ignore it
 
   createWindow()
 

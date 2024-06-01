@@ -68,6 +68,33 @@ export const createEmptyNoteAtom = atom(null, (get, set) => {
   set(selectedNoteByIdAtom, id)
 })
 
+export const saveNoteAtom = atom(null, (get, set, newContent: ContentNote) => {
+  const notes = get(notesAtom)
+  const selectedNote = get(selectedNoteAtom)
+
+  if (!selectedNote || !notes) return
+
+  const { title } = selectedNote
+
+  // save on disk
+  window.api.writeNote(title, newContent)
+
+  // update the saved note's last edit time
+
+  set(
+    notesAtom,
+    notes.map((note) => {
+      if (note.id === selectedNote.id) {
+        return {
+          ...note,
+          lastEditTime: Date.now()
+        }
+      }
+      return note
+    })
+  )
+})
+
 export const deleteNoteAtom = atom(null, (get, set) => {
   const notes = get(notesAtom)
   const selectedNote = get(selectedNoteAtom)
