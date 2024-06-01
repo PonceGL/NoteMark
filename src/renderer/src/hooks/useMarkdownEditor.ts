@@ -10,6 +10,7 @@ interface MarkdownEditorHookReturn {
   selectedNote: NoteContent | null
   editorRef: React.RefObject<MDXEditorMethods>
   handleAutoSaving: (content: ContentNote) => Promise<void>
+  handleBlur: () => Promise<void>
 }
 
 export function useMarkdownEditor(): MarkdownEditorHookReturn {
@@ -30,9 +31,22 @@ export function useMarkdownEditor(): MarkdownEditorHookReturn {
     }
   )
 
+  const handleBlur = async (): Promise<void> => {
+    if (!selectedNote) return
+
+    handleAutoSaving.cancel()
+
+    const content = editorRef.current?.getMarkdown()
+
+    if (content) {
+      await saveNote(content)
+    }
+  }
+
   return {
     selectedNote,
     editorRef,
-    handleAutoSaving
+    handleAutoSaving,
+    handleBlur
   }
 }

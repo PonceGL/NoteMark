@@ -19,7 +19,7 @@ import {
 import { useMarkdownEditor } from '../../hooks'
 
 export const MarkdownEditor = (): JSX.Element | null => {
-  const { selectedNote, editorRef, handleAutoSaving } = useMarkdownEditor()
+  const { selectedNote, editorRef, handleAutoSaving, handleBlur } = useMarkdownEditor()
 
   return (
     <MDXEditor
@@ -27,6 +27,7 @@ export const MarkdownEditor = (): JSX.Element | null => {
       ref={editorRef}
       markdown={selectedNote?.content ?? 'Create a new note to get started!'}
       onChange={handleAutoSaving}
+      onBlur={handleBlur}
       plugins={[
         toolbarPlugin({ toolbarContents: () => <KitchenSinkToolbar /> }),
         listsPlugin(),
