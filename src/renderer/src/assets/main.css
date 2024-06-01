@@ -19,7 +19,7 @@
 
     @apply overflow-hidden;
   }
-
+  /* https://www.electronjs.org/docs/latest/tutorial/window-customization#set-custom-draggable-region */
   header {
     -webkit-app-region: drag;
   }

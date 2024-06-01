@@ -1,9 +1,13 @@
-import { contextBridge } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
+import { GetNotes } from '../shared/types'
+import { NoteInfo } from '../shared/types'
 
 // Custom APIs for renderer
 const api = {
-  locale: navigator.language
+  locale: navigator.language,
+  getNotes: (...args: Parameters<GetNotes>): Promise<NoteInfo[]> =>
+    ipcRenderer.invoke('getNotes', ...args)
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

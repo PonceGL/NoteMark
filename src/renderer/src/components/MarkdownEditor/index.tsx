@@ -2,6 +2,7 @@ import {
   MDXEditor,
   headingsPlugin,
   imagePlugin,
+  linkDialogPlugin,
   linkPlugin,
   listsPlugin,
   markdownShortcutPlugin,
@@ -13,8 +14,6 @@ import { useMarkdownEditor } from '../../hooks'
 export const MarkdownEditor = (): JSX.Element | null => {
   const { selectedNote } = useMarkdownEditor()
 
-  // if (!selectedNote) return null
-
   return (
     <MDXEditor
       key={selectedNote?.id ?? 'new'}
@@ -24,7 +23,10 @@ export const MarkdownEditor = (): JSX.Element | null => {
         listsPlugin(),
         quotePlugin(),
         markdownShortcutPlugin(),
-        linkPlugin(),
+        linkPlugin({
+          disableAutoLink: false
+        }),
+        linkDialogPlugin(),
         imagePlugin(),
         tablePlugin()
       ]}

@@ -1,6 +1,6 @@
 import { useAtom, useAtomValue } from 'jotai'
 import { notesAtom, selectedNoteByIdAtom } from '../store'
-import { NoteInfo } from '../../../shared/models'
+import { NoteInfo } from '../../../shared/types'
 
 interface SelectedNoteReturn {
   notes: NoteInfo[]
@@ -14,7 +14,7 @@ interface SelectedNoteProps {
 
 export function useNotesList(props?: SelectedNoteProps): SelectedNoteReturn {
   const { onSelect } = props || {}
-  const notes = useAtomValue(notesAtom)
+  const notes = useAtomValue(notesAtom) ?? []
 
   const [selectedNoteById, setSelectedNoteById] = useAtom(selectedNoteByIdAtom)
 

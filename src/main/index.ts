@@ -2,13 +2,15 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import { getNotes } from './lib/NodeFiles'
+import { GetNotes } from '../shared/types'
 
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 900,
     height: 670,
-    show: false,
+    show: true,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     center: true,
@@ -58,6 +60,7 @@ app.whenReady().then(() => {
 
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
+  ipcMain.handle('getNotes', (_, ...args: Parameters<GetNotes>) => getNotes(...args)) // first argument is event, so we ignore it
 
   createWindow()
 
