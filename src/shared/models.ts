@@ -4,4 +4,4 @@ export type NoteInfo = {
   lastEditTime: number
 }
 
-export type NoteContent = string
+export type ContentNote = string

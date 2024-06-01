@@ -8,11 +8,17 @@ import {
   quotePlugin,
   tablePlugin
 } from '@mdxeditor/editor'
+import { useMarkdownEditor } from '../../hooks'
 
-export const MarkdownEditor = (): JSX.Element => {
+export const MarkdownEditor = (): JSX.Element | null => {
+  const { selectedNote } = useMarkdownEditor()
+
+  if (!selectedNote) return null
+
   return (
     <MDXEditor
-      markdown="# Hello world"
+      key={selectedNote.id}
+      markdown={selectedNote.content}
       plugins={[
         headingsPlugin(),
         listsPlugin(),

@@ -3,8 +3,16 @@ import { notesMock } from '../../store/mocks'
 import { NotePreview } from '../NotePreview'
 import { useNotesList } from '../../hooks'
 
-export function NotePreviewList({ className, ...props }: ComponentProps<'ul'>): JSX.Element {
-  const { notes, selectedNoteById, handleNoteSelected } = useNotesList()
+interface NotePreviewListProps extends ComponentProps<'ul'> {
+  onSelect?: () => void
+}
+
+export function NotePreviewList({
+  className,
+  onSelect,
+  ...props
+}: NotePreviewListProps): JSX.Element {
+  const { notes, selectedNoteById, handleNoteSelected } = useNotesList({ onSelect })
   return (
     <ul className={className} {...props}>
       {notes.length === 0 ? (
