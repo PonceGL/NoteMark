@@ -2,7 +2,7 @@ import { ComponentProps } from 'react'
 import { NotePreviewType } from './types'
 import { cn, formatDateFromMs } from '../../utils'
 
-type NotePreviewProps = NotePreviewType & ComponentProps<'div'>
+type NotePreviewProps = NotePreviewType & ComponentProps<'button'>
 
 export function NotePreview({
   title,
@@ -12,9 +12,10 @@ export function NotePreview({
   ...props
 }: NotePreviewProps): JSX.Element {
   return (
-    <div
+    <button
+      type="button"
       className={cn(
-        'cursor-pointer px-2.5 py-3 rounded-md transition-colors duration-200',
+        'w-full px-2.5 py-3 justify-start cursor-pointer rounded-md transition-colors duration-200 outline-none focus:outline-none',
         {
           'bg-zinc-400/75': isActive,
           'hover:bg-zinc-500/75': !isActive
@@ -23,10 +24,10 @@ export function NotePreview({
       )}
       {...props}
     >
-      <h3 className="mb-1 font-bold truncate">{title}</h3>
+      <h3 className="mb-1 text-left font-bold truncate">{title}</h3>
       <span className="w-full inline-block mb-2 text-xs font-light text-left">
         {formatDateFromMs(lastEditTime)}
       </span>
-    </div>
+    </button>
   )
 }

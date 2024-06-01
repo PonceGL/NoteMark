@@ -12,7 +12,7 @@ function createWindow(): void {
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     center: true,
-    title: 'PonceGL Electron',
+    title: 'NoteMark',
     frame: false,
     vibrancy: 'under-window', // only on macOS
     visualEffectState: 'active', // only on macOS
