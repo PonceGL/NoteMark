@@ -13,12 +13,12 @@ import { useMarkdownEditor } from '../../hooks'
 export const MarkdownEditor = (): JSX.Element | null => {
   const { selectedNote } = useMarkdownEditor()
 
-  if (!selectedNote) return null
+  // if (!selectedNote) return null
 
   return (
     <MDXEditor
-      key={selectedNote.id}
-      markdown={selectedNote.content}
+      key={selectedNote?.id ?? 'new'}
+      markdown={selectedNote?.content ?? 'Create a new note to get started!'}
       plugins={[
         headingsPlugin(),
         listsPlugin(),

@@ -27,7 +27,8 @@
     "@electron-toolkit/utils": "^3.0.0",
     "@mdxeditor/editor": "^3.4.0",
     "electron-updater": "^6.1.7",
-    "jotai": "^2.8.2"
+    "jotai": "^2.8.2",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.3.0",

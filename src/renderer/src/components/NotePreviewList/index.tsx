@@ -1,5 +1,4 @@
 import { ComponentProps } from 'react'
-import { notesMock } from '../../store/mocks'
 import { NotePreview } from '../NotePreview'
 import { useNotesList } from '../../hooks'
 
@@ -19,7 +18,7 @@ export function NotePreviewList({
         <li className="w-full inline-block mb-2 text-xs font-light text-left">No Notes Yet!</li>
       ) : (
         <>
-          {notesMock.map((note) => (
+          {notes.map((note) => (
             <li key={note.id}>
               <NotePreview
                 isActive={selectedNoteById === note.id}
