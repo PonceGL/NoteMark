@@ -65,7 +65,7 @@ export const createEmptyNoteAtom = atom(null, async (get, set) => {
     lastEditTime: Date.now()
   }
 
-  set(notesAtom, [...notes, newNote])
+  set(notesAtom, [newNote, ...notes])
   set(selectedNoteByIdAtom, id)
 })
 
@@ -96,11 +96,15 @@ export const saveNoteAtom = atom(null, (get, set, newContent: ContentNote) => {
   )
 })
 
-export const deleteNoteAtom = atom(null, (get, set) => {
+export const deleteNoteAtom = atom(null, async (get, set) => {
   const notes = get(notesAtom)
   const selectedNote = get(selectedNoteAtom)
 
   if (!selectedNote || !notes) return
+
+  const isDeleted = await window.api.deleteNote(selectedNote.title)
+
+  if (!isDeleted) return
 
   set(
     notesAtom,

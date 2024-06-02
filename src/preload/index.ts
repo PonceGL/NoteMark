@@ -1,6 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-import { CreateNote, GetNotes, ReadNote, WriteNote } from '../shared/types'
+import { CreateNote, DeleteNote, GetNotes, ReadNote, WriteNote } from '../shared/types'
 import { NoteInfo } from '../shared/types'
 
 // Custom APIs for renderer
@@ -13,7 +13,9 @@ const api = {
   writeNote: (...args: Parameters<WriteNote>): Promise<NoteInfo[]> =>
     ipcRenderer.invoke('writeNote', ...args),
   createNote: (...args: Parameters<CreateNote>): Promise<NoteInfo[]> =>
-    ipcRenderer.invoke('createNote', ...args)
+    ipcRenderer.invoke('createNote', ...args),
+  deleteNote: (...args: Parameters<DeleteNote>): Promise<NoteInfo[]> =>
+    ipcRenderer.invoke('deleteNote', ...args)
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to
