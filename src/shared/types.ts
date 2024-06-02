@@ -11,3 +11,5 @@ export type GetNotes = () => Promise<NoteInfo[]>
 export type ReadNote = (fileName: NoteInfo['title']) => Promise<string>
 
 export type WriteNote = (fileName: NoteInfo['title'], content: ContentNote) => Promise<void>
+
+export type CreateNote = () => Promise<string | false>

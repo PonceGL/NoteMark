@@ -1,5 +1,4 @@
 import {
-  KitchenSinkToolbar,
   MDXEditor,
   codeBlockPlugin,
   codeMirrorPlugin,
@@ -13,8 +12,7 @@ import {
   markdownShortcutPlugin,
   quotePlugin,
   tablePlugin,
-  thematicBreakPlugin,
-  toolbarPlugin
+  thematicBreakPlugin
 } from '@mdxeditor/editor'
 import { useMarkdownEditor } from '../../hooks'
 
@@ -29,7 +27,7 @@ export const MarkdownEditor = (): JSX.Element | null => {
       onChange={handleAutoSaving}
       onBlur={handleBlur}
       plugins={[
-        toolbarPlugin({ toolbarContents: () => <KitchenSinkToolbar /> }),
+        // toolbarPlugin({ toolbarContents: () => <KitchenSinkToolbar /> }),
         listsPlugin(),
         quotePlugin(),
         headingsPlugin(),

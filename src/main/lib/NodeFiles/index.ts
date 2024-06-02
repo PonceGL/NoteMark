@@ -3,6 +3,8 @@ import { APP_DIR_NAME, FILE_ENCODING } from '../../../shared/constants'
 import { ContentNote, NoteInfo } from '../../../shared/types'
 import { ensureDir, readFile, readdir, stat, writeFile } from 'fs-extra'
 import { newUUID } from '../../../shared/utils'
+import { dialog } from 'electron'
+import path from 'path'
 
 export function getRootDir(): string {
   return `${homedir()}/${APP_DIR_NAME}`
@@ -45,4 +47,40 @@ export async function writeNote(fileName: string, content: ContentNote): Promise
   console.info(`Writing note to ${fileName}.md`)
 
   writeFile(`${rootDir}/${fileName}.md`, content, { encoding: FILE_ENCODING })
+}
+
+export async function createNote(): Promise<string | false> {
+  const rootDir = getRootDir()
+
+  await ensureDir(rootDir)
+
+  const { filePath, canceled } = await dialog.showSaveDialog({
+    title: 'Create a new note',
+    defaultPath: `${rootDir}/untitled.md`,
+    buttonLabel: 'Create',
+    properties: ['showOverwriteConfirmation'],
+    showsTagField: false,
+    filters: [{ name: 'Markdown', extensions: ['md'] }]
+  })
+
+  if (canceled || !filePath) {
+    console.info('User canceled creating a new note')
+    return false
+  }
+
+  const { name: fileName, dir: parentDir } = path.parse(filePath)
+
+  if (parentDir !== rootDir) {
+    await dialog.showMessageBox({
+      type: 'error',
+      title: 'Creation failed',
+      message: `All notes must be saved under ${rootDir} directory.`
+    })
+
+    return false
+  }
+
+  console.info(`Creating a new note: ${fileName}.md`)
+  await writeFile(filePath, '')
+  return fileName
 }
