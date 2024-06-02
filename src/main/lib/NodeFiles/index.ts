@@ -1,10 +1,11 @@
 import { homedir } from 'os'
-import { APP_DIR_NAME, FILE_ENCODING } from '../../../shared/constants'
+import { APP_DIR_NAME, FILE_ENCODING, WELCOME_NOTE_FILE_NAME } from '../../../shared/constants'
 import { ContentNote, NoteInfo } from '../../../shared/types'
 import { ensureDir, readFile, readdir, remove, stat, writeFile } from 'fs-extra'
 import { newUUID } from '../../../shared/utils'
 import { dialog } from 'electron'
 import path from 'path'
+import welcomeNote from '../../../../resources/welcomeNote.md?asset'
 
 export function getRootDir(): string {
   return `${homedir()}/${APP_DIR_NAME}`
@@ -21,6 +22,12 @@ export async function getNotes(): Promise<NoteInfo[]> {
   })
 
   const notes = notesFileNames.filter((fileName) => fileName.endsWith('.md'))
+
+  if (notes.length === 0) {
+    const content = await readFile(welcomeNote, { encoding: FILE_ENCODING })
+    await writeFile(`${rootDir}/${WELCOME_NOTE_FILE_NAME}.md`, content, { encoding: FILE_ENCODING })
+    notes.push(`${WELCOME_NOTE_FILE_NAME}.md`)
+  }
 
   return Promise.all(notes.map(getNoteInfoFromFileName))
 }

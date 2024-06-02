@@ -2,6 +2,7 @@ import { atom } from 'jotai'
 import { unwrap } from 'jotai/utils'
 import { ContentNote, NoteInfo } from '../../../shared/types'
 import { newUUID } from '../utils/uuid'
+import { WELCOME_NOTE_FILE_NAME } from '../../../shared/constants'
 
 export interface NoteContent extends NoteInfo {
   content: ContentNote
@@ -23,20 +24,29 @@ export const notesAtom = unwrap(notesAtomAsync, (prev) => prev)
 export const selectedNoteByIdAtom = atom<string | null>(null)
 
 const selectedNoteAtomAsync = atom(async (get): Promise<NoteContent | null> => {
-  const notes = get(notesAtom)
+  const notes = get(notesAtom) ?? []
   const selectedNoteById = get(selectedNoteByIdAtom)
 
-  if (selectedNoteById === null || !notes) return null
+  if (selectedNoteById === null && !notes) return null
+
+  const isWelcomeNote = notes.length === 1 && notes[0].title === WELCOME_NOTE_FILE_NAME
+  if (selectedNoteById === null || isWelcomeNote) {
+    const content = await window.api.readNote(notes[0].title)
+    return { ...notes[0], content: content }
+  }
 
   const selectedNote = notes.find((note) => note.id === selectedNoteById)
-  if (!selectedNote) return null
 
-  const content = await window.api.readNote(selectedNote.title)
+  if (selectedNote) {
+    const content = await window.api.readNote(selectedNote.title)
 
-  return {
-    ...selectedNote,
-    content: content
+    return {
+      ...selectedNote,
+      content: content
+    }
   }
+
+  return null
 })
 
 export const selectedNoteAtom = unwrap(
@@ -62,6 +72,7 @@ export const createEmptyNoteAtom = atom(null, async (get, set) => {
   const newNote: NoteInfo = {
     id,
     title,
+    // lastEditTime: new Date().getTime()
     lastEditTime: Date.now()
   }
 
