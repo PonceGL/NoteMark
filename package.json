@@ -1,10 +1,15 @@
 {
   "name": "note-mark",
   "version": "1.0.0",
-  "description": "An Electron application with React and TypeScript",
+  "description": "A simple Markdown scripting application",
   "main": "./out/main/index.js",
-  "author": "example.com",
+  "author": "PonceGL",
   "homepage": "https://electron-vite.org",
+  "repository": "https://github.com/PonceGL/NoteMark",
+  "publish": {
+    "provider": "github",
+    "releaseType": "release"
+  },
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts",

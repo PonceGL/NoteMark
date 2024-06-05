@@ -1,9 +1,29 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, Notification } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { createNote, deleteNote, getNotes, readNote, writeNote } from './lib/NodeFiles'
-import { CreateNote, DeleteNote, GetNotes, ReadNote, WriteNote } from '../shared/types'
+import {
+  CreateNote,
+  DeleteNote,
+  GetNotes,
+  ReadNote,
+  ShowNotification,
+  WriteNote
+} from '../shared/types'
+import { autoUpdater, UpdateInfo, ProgressInfo } from 'electron-updater'
+import {
+  checkUpdates,
+  downloadProgress,
+  errorInUpdate,
+  updateAvailable,
+  updateDownloaded,
+  updateNotAvailable
+} from './lib/ElectronUpdater'
+import { showNotification } from './lib/MainProcessModules'
+
+autoUpdater.autoDownload = false
+autoUpdater.autoInstallOnAppQuit = false
 
 function createWindow(): void {
   // Create the browser window.
@@ -65,6 +85,9 @@ app.whenReady().then(() => {
   ipcMain.handle('writeNote', (_, ...args: Parameters<WriteNote>) => writeNote(...args)) // first argument is event, so we ignore it
   ipcMain.handle('createNote', (_, ...args: Parameters<CreateNote>) => createNote(...args)) // first argument is event, so we ignore it
   ipcMain.handle('deleteNote', (_, ...args: Parameters<DeleteNote>) => deleteNote(...args)) // first argument is event, so we ignore it
+  ipcMain.handle('showNotification', (_, ...args: Parameters<ShowNotification>) =>
+    showNotification(...args)
+  ) // first argument is event, so we ignore it
 
   createWindow()
 
@@ -73,6 +96,8 @@ app.whenReady().then(() => {
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
+
+  checkUpdates()
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common
@@ -86,3 +111,19 @@ app.on('window-all-closed', () => {
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
+
+app.on('ready', function () {
+  autoUpdater.checkForUpdates()
+  new Notification()
+})
+
+autoUpdater.on('checking-for-update', () => {
+  console.log('====================================')
+  console.log('checking-for-update')
+  console.log('====================================')
+})
+autoUpdater.on('update-available', (info: UpdateInfo) => updateAvailable(info))
+autoUpdater.on('update-not-available', (info: UpdateInfo) => updateNotAvailable(info))
+autoUpdater.on('error', (err: Error) => errorInUpdate(err))
+autoUpdater.on('download-progress', (progressObj: ProgressInfo) => downloadProgress(progressObj))
+autoUpdater.on('update-downloaded', (info: UpdateInfo) => updateDownloaded(info))
