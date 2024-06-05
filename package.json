@@ -24,7 +24,9 @@
     "build:unpack": "npm run build && electron-builder --dir",
     "build:win": "npm run build && electron-builder --win",
     "build:mac": "electron-vite build && electron-builder --mac",
-    "build:linux": "electron-vite build && electron-builder --linux"
+    "build:linux": "electron-vite build && electron-builder --linux",
+    "release": "release-it",
+    "beta": "release-it patch --preRelease=beta"
   },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.0",
@@ -41,6 +43,7 @@
     "@electron-toolkit/eslint-config-prettier": "^2.0.0",
     "@electron-toolkit/eslint-config-ts": "^1.0.1",
     "@electron-toolkit/tsconfig": "^1.0.1",
+    "@release-it/conventional-changelog": "^8.0.1",
     "@tailwindcss/typography": "^0.5.13",
     "@types/node": "^18.19.9",
     "@types/react": "^18.2.48",
@@ -60,9 +63,34 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^5.2.1",
+    "release-it": "^17.3.0",
     "tailwind-merge": "^2.3.0",
     "tailwindcss": "^3.4.3",
     "typescript": "^5.3.3",
     "vite": "^5.0.12"
+  },
+  "release-it": {
+    "git": {
+      "commitMessage": "build: release ${version}",
+      "tagName": "v${version}"
+    },
+    "npm": {
+      "publish": false
+    },
+    "github": {
+      "release": true
+    },
+    "hooks": {
+      "before:init": [
+        "yarn lint",
+        "yarn typecheck"
+      ],
+      "after:release": "echo Successfully released ${name} v${version} to ${repo.repository}."
+    },
+    "plugins": {
+      "@release-it/conventional-changelog": {
+        "preset": "angular"
+      }
+    }
   }
 }
