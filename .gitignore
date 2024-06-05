@@ -8,3 +8,7 @@ out
 coverage
 
 .env*
+
+signing
+*.p12
+*.pfx
