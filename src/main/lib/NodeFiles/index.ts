@@ -51,7 +51,6 @@ export async function readNote(fileName: string): Promise<string> {
 
 export async function writeNote(fileName: string, content: ContentNote): Promise<void> {
   const rootDir = getRootDir()
-  console.info(`Writing note to ${fileName}.md`)
 
   writeFile(`${rootDir}/${fileName}.md`, content, { encoding: FILE_ENCODING })
 }
