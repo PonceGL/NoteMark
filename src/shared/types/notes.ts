@@ -8,10 +8,10 @@ export type ContentNote = string
 
 export type GetNotes = () => Promise<NoteInfo[]>
 
-export type ReadNote = (fileName: NoteInfo['title']) => Promise<string>
+export type ReadNote = (id: NoteInfo['id']) => Promise<string>
 
-export type WriteNote = (fileName: NoteInfo['title'], content: ContentNote) => Promise<void>
+export type WriteNote = (id: NoteInfo['id'], content: ContentNote) => Promise<void>
 
 export type CreateNote = () => Promise<string | false>
 
-export type DeleteNote = (fileName: NoteInfo['title']) => Promise<boolean>
+export type DeleteNote = (id: NoteInfo['id']) => Promise<boolean>

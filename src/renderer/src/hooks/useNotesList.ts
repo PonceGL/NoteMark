@@ -4,7 +4,7 @@ import { NoteInfo } from '../../../shared/types'
 
 interface SelectedNoteReturn {
   notes: NoteInfo[]
-  selectedNoteById: string | null
+  selectedNoteId: string | null
   handleNoteSelected: (index: string) => () => Promise<void>
 }
 
@@ -16,7 +16,7 @@ export function useNotesList(props?: SelectedNoteProps): SelectedNoteReturn {
   const { onSelect } = props || {}
   const notes = useAtomValue(notesAtom) ?? []
 
-  const [selectedNoteById, setSelectedNoteById] = useAtom(selectedNoteByIdAtom)
+  const [selectedNoteId, setSelectedNoteById] = useAtom(selectedNoteByIdAtom)
 
   const handleNoteSelected = (id: string) => async () => {
     setSelectedNoteById(id)
@@ -27,7 +27,7 @@ export function useNotesList(props?: SelectedNoteProps): SelectedNoteReturn {
 
   return {
     notes,
-    selectedNoteById,
+    selectedNoteId,
     handleNoteSelected
   }
 }

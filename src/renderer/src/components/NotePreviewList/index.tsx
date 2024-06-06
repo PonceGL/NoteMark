@@ -11,7 +11,7 @@ export function NotePreviewList({
   onSelect,
   ...props
 }: NotePreviewListProps): JSX.Element {
-  const { notes, selectedNoteById, handleNoteSelected } = useNotesList({ onSelect })
+  const { notes, selectedNoteId, handleNoteSelected } = useNotesList({ onSelect })
   return (
     <ul className={className} {...props}>
       {notes.length === 0 ? (
@@ -21,7 +21,7 @@ export function NotePreviewList({
           {notes.map((note) => (
             <li key={note.id}>
               <NotePreview
-                isActive={selectedNoteById === note.id}
+                isActive={selectedNoteId === note.id}
                 onClick={handleNoteSelected(note.id)}
                 {...note}
               />

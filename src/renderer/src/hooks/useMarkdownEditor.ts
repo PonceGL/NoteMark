@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import { useAtomValue, useSetAtom } from 'jotai'
 import { MDXEditorMethods } from '@mdxeditor/editor'
 import { throttle } from 'lodash' // TODO: remove lodash
-import { NoteContent, saveNoteAtom, selectedNoteAtom } from '../store'
+import { NoteContent, saveNoteAtomAsync, selectedNoteAtom } from '../store'
 import { ContentNote } from '../../../shared/types'
 import { AUTO_SAVING_TIME } from '../../../shared/constants'
 
@@ -16,8 +16,9 @@ interface MarkdownEditorHookReturn {
 export function useMarkdownEditor(): MarkdownEditorHookReturn {
   const editorRef = useRef<MDXEditorMethods>(null)
   const selectedNote = useAtomValue(selectedNoteAtom)
-  const saveNote = useSetAtom(saveNoteAtom)
+  const saveNote = useSetAtom(saveNoteAtomAsync)
 
+  // TODO: handle correctly the selectedNote, when user change very fast of note
   const handleAutoSaving = throttle(
     async (content: ContentNote): Promise<void> => {
       if (!selectedNote) return

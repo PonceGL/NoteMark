@@ -1,8 +1,8 @@
 import { atom } from 'jotai'
 import { unwrap } from 'jotai/utils'
 import { ContentNote, NoteInfo } from '../../../shared/types'
-import { newUUID } from '../utils/uuid'
 import { WELCOME_NOTE_FILE_NAME } from '../../../shared/constants'
+import { getTitle } from '../utils/notes'
 
 export interface NoteContent extends NoteInfo {
   content: ContentNote
@@ -25,20 +25,20 @@ export const selectedNoteByIdAtom = atom<string | null>(null)
 
 const selectedNoteAtomAsync = atom(async (get): Promise<NoteContent | null> => {
   const notes = get(notesAtom) ?? []
-  const selectedNoteById = get(selectedNoteByIdAtom)
+  const selectedNoteId = get(selectedNoteByIdAtom)
 
-  if (selectedNoteById === null && !notes) return null
+  if (selectedNoteId === null && !notes) return null
 
-  const isWelcomeNote = notes.length === 1 && notes[0].title === WELCOME_NOTE_FILE_NAME
-  if (selectedNoteById === null || isWelcomeNote) {
-    const content = await window.api.readNote(notes[0].title)
+  const isWelcomeNote = notes.length === 1 && notes[0].id === WELCOME_NOTE_FILE_NAME
+  if (selectedNoteId === null || isWelcomeNote) {
+    const content = await window.api.readNote(notes[0].id)
     return { ...notes[0], content: content }
   }
 
-  const selectedNote = notes.find((note) => note.id === selectedNoteById)
+  const selectedNote = notes.find((note) => note.id === selectedNoteId)
 
   if (selectedNote) {
-    const content = await window.api.readNote(selectedNote.title)
+    const content = await window.api.readNote(selectedNote.id)
 
     return {
       ...selectedNote,
@@ -65,14 +65,12 @@ export const createEmptyNoteAtom = atom(null, async (get, set) => {
 
   if (!notes) return
 
-  const title = await window.api.createNote()
-  if (!title) return
-  const id = newUUID()
+  const id = await window.api.createNote()
+  if (!id) return
 
   const newNote: NoteInfo = {
     id,
-    title,
-    // lastEditTime: new Date().getTime()
+    title: '',
     lastEditTime: Date.now()
   }
 
@@ -80,32 +78,36 @@ export const createEmptyNoteAtom = atom(null, async (get, set) => {
   set(selectedNoteByIdAtom, id)
 })
 
-export const saveNoteAtom = atom(null, (get, set, newContent: ContentNote) => {
-  const notes = get(notesAtom)
-  const selectedNote = get(selectedNoteAtom)
+export const saveNoteAtomAsync = atom(
+  null,
+  async (get, set, newContent: ContentNote): Promise<void> => {
+    const notes = get(notesAtom)
+    const selectedNote = get(selectedNoteAtom)
 
-  if (!selectedNote || !notes) return
+    if (!selectedNote || !notes) return
 
-  const { title } = selectedNote
+    const { id } = selectedNote
 
-  // save on disk
-  window.api.writeNote(title, newContent)
+    const content = await window.api.readNote(id)
+    const title = getTitle(content)
 
-  // update the saved note's last edit time
+    window.api.writeNote(id, newContent)
 
-  set(
-    notesAtom,
-    notes.map((note) => {
-      if (note.id === selectedNote.id) {
-        return {
-          ...note,
-          lastEditTime: Date.now()
+    set(
+      notesAtom,
+      notes.map((note) => {
+        if (note.id === selectedNote.id) {
+          return {
+            ...note,
+            title: title,
+            lastEditTime: Date.now()
+          }
         }
-      }
-      return note
-    })
-  )
-})
+        return note
+      })
+    )
+  }
+)
 
 export const deleteNoteAtom = atom(null, async (get, set) => {
   const notes = get(notesAtom)
@@ -113,7 +115,7 @@ export const deleteNoteAtom = atom(null, async (get, set) => {
 
   if (!selectedNote || !notes) return
 
-  const isDeleted = await window.api.deleteNote(selectedNote.title)
+  const isDeleted = await window.api.deleteNote(selectedNote.id)
 
   if (!isDeleted) return
 
