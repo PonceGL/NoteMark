@@ -24,7 +24,9 @@ const api = {
   deleteNote: (...args: Parameters<DeleteNote>): Promise<NoteInfo[]> =>
     ipcRenderer.invoke('deleteNote', ...args),
   showNotification: (...args: Parameters<ShowNotification>): Promise<void> =>
-    ipcRenderer.invoke('showNotification', ...args)
+    ipcRenderer.invoke('showNotification', ...args),
+  darkModeToggle: (): Promise<void> => ipcRenderer.invoke('dark-mode:toggle'),
+  setupSystemTheme: (): Promise<void> => ipcRenderer.invoke('dark-mode:system')
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

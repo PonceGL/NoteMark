@@ -1,6 +1,7 @@
 import { ComponentProps } from 'react'
 import { DeleteNoteButton, NewNoteButton } from '../Buttons'
 import { NotificationButton } from '../Buttons/NotificationButton'
+import { DarkModeToggle } from '../Buttons/DarkModeToggle'
 
 export function ActionButtonRow({ ...props }: ComponentProps<'div'>): JSX.Element {
   return (
@@ -8,6 +9,7 @@ export function ActionButtonRow({ ...props }: ComponentProps<'div'>): JSX.Elemen
       <NewNoteButton />
       <DeleteNoteButton />
       <NotificationButton />
+      <DarkModeToggle />
     </div>
   )
 }

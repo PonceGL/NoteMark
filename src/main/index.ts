@@ -5,9 +5,11 @@ import icon from '../../resources/icon.png?asset'
 import { createNote, deleteNote, getNotes, readNote, writeNote } from './lib/NodeFiles'
 import {
   CreateNote,
+  DarkModeToggle,
   DeleteNote,
   GetNotes,
   ReadNote,
+  SetupSystemTheme,
   ShowNotification,
   WriteNote
 } from '../shared/types'
@@ -21,6 +23,7 @@ import {
   updateNotAvailable
 } from './lib/ElectronUpdater'
 import { showNotification } from './lib/MainProcessModules'
+import { setupSystemTheme, darkModeToggle } from './lib/Native'
 
 autoUpdater.autoDownload = false
 autoUpdater.autoInstallOnAppQuit = false
@@ -82,13 +85,19 @@ app.whenReady().then(() => {
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
   ipcMain.handle('getNotes', (_, ...args: Parameters<GetNotes>) => getNotes(...args)) // first argument is event, so we ignore it
-  ipcMain.handle('readNote', (_, ...args: Parameters<ReadNote>) => readNote(...args)) // first argument is event, so we ignore it
-  ipcMain.handle('writeNote', (_, ...args: Parameters<WriteNote>) => writeNote(...args)) // first argument is event, so we ignore it
-  ipcMain.handle('createNote', (_, ...args: Parameters<CreateNote>) => createNote(...args)) // first argument is event, so we ignore it
-  ipcMain.handle('deleteNote', (_, ...args: Parameters<DeleteNote>) => deleteNote(...args)) // first argument is event, so we ignore it
+  ipcMain.handle('readNote', (_, ...args: Parameters<ReadNote>) => readNote(...args))
+  ipcMain.handle('writeNote', (_, ...args: Parameters<WriteNote>) => writeNote(...args))
+  ipcMain.handle('createNote', (_, ...args: Parameters<CreateNote>) => createNote(...args))
+  ipcMain.handle('deleteNote', (_, ...args: Parameters<DeleteNote>) => deleteNote(...args))
   ipcMain.handle('showNotification', (_, ...args: Parameters<ShowNotification>) =>
     showNotification(...args)
-  ) // first argument is event, so we ignore it
+  )
+  ipcMain.handle('dark-mode:toggle', (_, ...args: Parameters<DarkModeToggle>) =>
+    darkModeToggle(...args)
+  )
+  ipcMain.handle('dark-mode:system', (_, ...args: Parameters<SetupSystemTheme>) =>
+    setupSystemTheme(...args)
+  )
 
   createWindow()
 
@@ -116,6 +125,7 @@ app.on('window-all-closed', () => {
 app.on('ready', function () {
   autoUpdater.checkForUpdates()
   new Notification()
+  setupSystemTheme()
 })
 
 autoUpdater.on('checking-for-update', () => {

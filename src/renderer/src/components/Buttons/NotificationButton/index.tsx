@@ -1,6 +1,7 @@
 import { NotificationOptions } from '../../../../../shared/types'
 import { ActionButton } from '../ActionButton'
 import { DefaultButtonProps } from '../types'
+import { FaBell } from 'react-icons/fa'
 
 export function NotificationButton({ ...props }: DefaultButtonProps): JSX.Element {
   const handleNotificationAction = (_, index: number): void => {
@@ -24,7 +25,7 @@ export function NotificationButton({ ...props }: DefaultButtonProps): JSX.Elemen
 
   return (
     <ActionButton onClick={handleNotification} {...props}>
-      Notification
+      <FaBell className="w-4 h-4 text-zinc-300" />
     </ActionButton>
   )
 }
