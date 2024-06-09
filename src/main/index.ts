@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, ipcMain, Notification } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, Notification, Menu } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -24,6 +24,7 @@ import {
 } from './lib/ElectronUpdater'
 import { showNotification } from './lib/MainProcessModules'
 import { setupSystemTheme, darkModeToggle } from './lib/Native'
+import { customMenu } from './lib/Menu'
 
 autoUpdater.autoDownload = false
 autoUpdater.autoInstallOnAppQuit = false
@@ -67,6 +68,8 @@ function createWindow(): void {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
 }
+
+Menu.setApplicationMenu(customMenu)
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
