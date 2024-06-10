@@ -24,7 +24,7 @@ import {
 } from './lib/ElectronUpdater'
 import { showNotification } from './lib/MainProcessModules'
 import { setupSystemTheme, darkModeToggle } from './lib/Native'
-import { customMenu } from './lib/Menu'
+import { customMenu } from './lib/Native'
 
 autoUpdater.autoDownload = false
 autoUpdater.autoInstallOnAppQuit = false
